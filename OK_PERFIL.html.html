@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>QGIS Track Profile 2 Web</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style>
+    html,
+    body,
+    #map,
+    #elevation-div {
+      height: 100%;
+      width: 100%;
+      padding: 0px;
+      margin: 0px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #elevation-div { overflow: visible; }
+    #map {
+      height: 75%;
+      position: relative;
+      z-index: 1;
+    }
+
+    #elevation-div {
+      height: 25%;
+      font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+    }
+
+    .data-summary {
+      font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      position: absolute;
+      bottom: 2;
+      left: 45px;
+    }
+
+    .data-summary .summaryvalue {
+      font-weight: bold;
+    }
+
+  </style>
+  <style>
+   .custom-theme.leaflet-control.elevation .area {
+    fill: #d45f5f;
+    stroke: hsla(60, 0%, 0%, 0.85);
+    stroke-width: 2.5;
+   }
+
+   .custom-theme.height-focus.circle-lower {
+     fill: #ffb800;
+   }
+
+   .custom-theme.elevation-polyline {
+     stroke: #ff0000;
+     stroke-opacity: 0.85 ;
+   }
+ </style>
+ <style>
+
+	#mapDIV {
+	height: 670px;
+	width: 570px;
+	border: solid 2px black;}
+	
+	.leaflet-div-icon {
+        text-align: center;
+    }
+    
+    .my-div-icon {
+        background-color: rgba(255, 255, 255, 0.0);
+        border: none;
+        height: 25px;
+        text-align: left;
+        line-height: 25px;
+    }
+	
+</style>
+
+  <!-- Leaflet (JS/CSS) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
+  <!-- D3.js -->
+  <script src="https://unpkg.com/d3@4.13.0/build/d3.min.js" charset="utf-8"></script>
+  <!-- leaflet-gpx -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.4.0/gpx.js"></script>
+  <!-- leaflet-elevation -->
+  <link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation@0.3.9/leaflet-elevation.min.css" />
+  <script src="https://unpkg.com/@raruto/leaflet-elevation@0.3.9/leaflet-elevation.min.js"></script>
+  
+    <script type="text/javascript" src="DATA/JSON/Geología_Bernal.js"></script>
+  <script type="text/javascript" src="DATA/JSON/Contactos.js"></script>
+
+</head>
+
+<body>
+
+  <div id="map"></div>
+  <div id="elevation-div" class="leaflet-control elevation"></div>
+<div id="data-summary" class="data-summary"><span class="totlen"><span class="summarylabel">Total Length: </span><span class="summaryvalue">0</span></span> &mdash; <span class="maxele"><span class="summarylabel">Max Elevation: </span><span class="summaryvalue">0</span></span>
+    &mdash; <span class="minele"><span class="summarylabel">Min Elevation: </span><span class="summaryvalue">4</span></span></div>
+
+<script>
+	 var opts = {"map": {"center": [20.7614143840000001 , -99.9366737845000017], zoom: 1, inertia: false, maxBounds: [[20.734254445000001 , -99.9608695029999978 ],[20.7885743229999989, -99.9124780660000056 ]], maxZoom: 20, minZoom: 14 }, "zoomControl": {"position": "topleft"}, "elevationControl": {"data": "{\"name\":\"PASO_4_DRAPE\", \"type\":\"FeatureCollection\",\"features\": [{ \"type\": \"Feature\", \"properties\": { }, \"geometry\": { \"type\": \"MultiLineString\", \"coordinates\": [ [ [ -99.950371, 20.75515499,2051.0 ], [ -99.95023177, 20.7551498,2047.0 ], [ -99.95009254, 20.7551446,2044.0 ], [ -99.94995331, 20.75513941,2041.0 ], [ -99.94981408, 20.75513422,2038.0 ], [ -99.94967485, 20.75512903,2037.0 ], [ -99.94953562, 20.75512384,2036.0 ], [ -99.94939639, 20.75511864,2034.0 ], [ -99.94925716, 20.75511345,2032.0 ], [ -99.94911793, 20.75510826,2030.0 ], [ -99.9489787, 20.75510307,2028.0 ], [ -99.94883947, 20.75509787,2026.0 ], [ -99.94870024, 20.75509268,2025.0 ], [ -99.94856101, 20.75508749,2023.0 ], [ -99.94842178, 20.7550823,2022.0 ], [ -99.94828255, 20.7550771,2021.0 ], [ -99.94814332, 20.75507191,2020.0 ], [ -99.94800409, 20.75506672,2019.0 ], [ -99.94786486, 20.75506153,2018.0 ], [ -99.94772563, 20.75505633,2017.0 ], [ -99.9475864, 20.75505114,2017.0 ], [ -99.94744717, 20.75504595,2017.0 ], [ -99.94730794, 20.75504076,2019.0 ], [ -99.94716871, 20.75503557,2021.0 ], [ -99.94702948, 20.75503037,2024.0 ], [ -99.94689025, 20.75502518,2028.0 ], [ -99.94675102, 20.75501999,2031.0 ], [ -99.94661179, 20.7550148,2033.0 ], [ -99.94647256, 20.7550096,2035.0 ], [ -99.94633333, 20.75500441,2036.0 ], [ -99.9461941, 20.75499922,2040.0 ], [ -99.94605487, 20.75499403,2040.0 ], [ -99.94591564, 20.75498883,2041.0 ], [ -99.94577641, 20.75498364,2043.0 ], [ -99.94563718, 20.75497845,2047.0 ], [ -99.94549795, 20.75497326,2051.0 ], [ -99.94535872, 20.75496807,2056.0 ], [ -99.94521949, 20.75496287,2060.0 ], [ -99.94508025, 20.75495768,2064.0 ], [ -99.94494102, 20.75495249,2067.0 ], [ -99.94480179, 20.7549473,2069.0 ], [ -99.94466256, 20.7549421,2072.0 ], [ -99.94452333, 20.75493691,2076.0 ], [ -99.9443841, 20.75493172,2078.0 ], [ -99.94424487, 20.75492653,2080.0 ], [ -99.94410564, 20.75492133,2082.0 ], [ -99.94396641, 20.75491614,2085.0 ], [ -99.94382718, 20.75491095,2089.0 ], [ -99.94368795, 20.75490576,2092.0 ], [ -99.94354872, 20.75490057,2094.0 ], [ -99.94340949, 20.75489537,2094.0 ], [ -99.94327026, 20.75489018,2094.0 ], [ -99.94313103, 20.75488499,2094.0 ], [ -99.9429918, 20.7548798,2093.0 ], [ -99.94285257, 20.7548746,2092.0 ], [ -99.94271334, 20.75486941,2094.0 ], [ -99.94257411, 20.75486422,2097.0 ], [ -99.94243488, 20.75485903,2108.0 ], [ -99.94229565, 20.75485383,2112.0 ], [ -99.94215642, 20.75484864,2116.0 ], [ -99.94201719, 20.75484345,2120.0 ], [ -99.94187796, 20.75483826,2125.0 ], [ -99.94173873, 20.75483307,2130.0 ], [ -99.9415995, 20.75482787,2134.0 ], [ -99.94146027, 20.75482268,2137.0 ], [ -99.94132104, 20.75481749,2140.0 ], [ -99.94118181, 20.7548123,2143.0 ], [ -99.94104258, 20.7548071,2144.0 ], [ -99.94090335, 20.75480191,2144.0 ], [ -99.94076412, 20.75479672,2144.0 ], [ -99.94062489, 20.75479153,2143.0 ], [ -99.94048566, 20.75478633,2142.0 ], [ -99.94034643, 20.75478114,2139.0 ], [ -99.9402072, 20.75477595,2133.0 ], [ -99.94006797, 20.75477076,2126.0 ], [ -99.93992874, 20.75476556,2119.0 ], [ -99.93978951, 20.75476037,2112.0 ], [ -99.93965028, 20.75475518,2105.0 ], [ -99.93951105, 20.75474999,2101.0 ], [ -99.93937182, 20.7547448,2098.0 ], [ -99.93923259, 20.7547396,2095.0 ], [ -99.93909336, 20.75473441,2091.0 ], [ -99.93895413, 20.75472922,2087.0 ], [ -99.9388149, 20.75472403,2083.0 ], [ -99.93867567, 20.75471883,2084.0 ], [ -99.93853644, 20.75471364,2078.0 ], [ -99.93839721, 20.75470845,2071.0 ], [ -99.93825798, 20.75470326,2063.0 ], [ -99.93811875, 20.75469806,2054.0 ], [ -99.93797952, 20.75469287,2047.0 ], [ -99.93784029, 20.75468768,2046.0 ], [ -99.93770106, 20.75468249,2052.0 ], [ -99.93756183, 20.7546773,2060.0 ], [ -99.93742259, 20.7546721,2068.0 ], [ -99.93728336, 20.75466691,2075.0 ], [ -99.93714413, 20.75466172,2081.0 ], [ -99.9370049, 20.75465653,2088.0 ], [ -99.93686567, 20.75465133,2095.0 ], [ -99.93672644, 20.75464614,2101.0 ]]] } }]}", "options": {"position": "topright", "theme": "custom-theme", "useHeightIndicator": true, "collapsed": false, "detachedView": true, "elevationDiv": "#elevation-div", "followPositionMarker": false, "autohide": false}}, "layersControl": {"options": {"collapsed": false}}, "otmLayer": {"url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", "options": {"attribution": "Map data: &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenTopoMap</a>, <a href=\"http://viewfinderpanoramas.org\">SRTM</a> | Map style: &copy; <a href=\"https://opentopomap.org\">OpenTopoMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"}}} ;
+    var map = new L.Map('map', opts.map);
+	
+	  var controlElevation = L.control.elevation(opts.elevationControl.options);
+	
+    var scale = L.control.scale({
+	'imperial':false
+	});
+	
+	scale.addTo(map);
+	
+	
+  var CzLt = L.divIcon({
+            iconSize: new L.Point(40, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'Cz-Lt',
+            className: 'leaflet-div-icon'
+        });
+		
+	var Col = L.divIcon({
+            iconSize: new L.Point(40, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'Qco',
+            className: 'leaflet-div-icon'
+        });
+		
+	var ADa = L.divIcon({
+            iconSize: new L.Point(70, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'Tpl A-Da',
+            className: 'leaflet-div-icon'
+        });
+		
+	var RTR = L.divIcon({
+            iconSize: new L.Point(70, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'Tpl R-TR',
+            className: 'leaflet-div-icon'
+        });
+		
+	var CgAr = L.divIcon({
+            iconSize: new L.Point(70, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'Tpl-Q Cgp-Ar',
+            className: 'leaflet-div-icon'
+        });
+		
+	var myDivIcon1 = L.divIcon({
+            iconSize: new L.Point(70, 20),
+            iconAnchor: new L.Point(20, 20),
+            html: 'TplGd-D',
+            className: 'leaflet-div-icon'
+        });
+ 
+	
+var contact_style = {
+	fillcolor:0,
+	color: "#000000",
+	weight: 8,
+	opacity: 1,
+	fillOpacity: 0
+};
+	
+
+//Capas Base
+		var osm = L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+		{attribution: 'Map Data &copy; OpenStreetMap contributors'
+		});
+		
+		osm.addTo(map);
+  
+		var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+		maxZoom: 17,
+		attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+		});
+		
+		topo.addTo(map);
+		
+		//var geologyTiles = L.tileLayer("DATA/RST/GeologiaTiles/{z}/{x}/{y}.png", {});
+		
+		//geologyTiles.addTo(map);
+
+//Capas GeoJSON
+var geology = L.geoJson(geology, {
+	style:function(feature){
+		switch (feature.properties.LITOLOGIA){
+			case 'Riolita-Toba riolí­tica': return {color:'#f9b6ac',fillOpacity: .8};
+			case 'Andesita-Dacita': return {color:'#e4c19b',fillOpacity: .8};
+			case 'Conglomerado poligénico-Arenisca': return {color:'#eedfb3',fillOpacity: .8};
+			case 'Caliza-Lutita': return {color:'#5f7641',fillOpacity: .8};
+			case 'Granodiorita-Diorita': return {color:'#ed1c24',fillOpacity: .8};
+			case 'Coluvial': return {color:'#f7ece1',fillOpacity: .8};
+			
+		}
+		},
+		onEachFeature: function( feature, layer ){
+      		layer.bindPopup( "<strong>" + "ERA:" + "</strong><br/>"+ feature.properties.ERA)
+    }
+	}).addTo(map);
+	
+var contact = L.geoJson(contact,{
+	style: contact_style,
+	onEachFeature: function( feature, layer ){
+  	layer.bindPopup( "carreteras")}
+	}).addTo (map);
+	
+var basemaps = {
+		"OSM": osm,
+		"Topografía": topo,										
+		//"Hillshade": hill,
+		//"Geología": geologyTiles,
+		};
+
+var overlays ={
+		"Geología": geology,	
+    };
+	
+L.control.layers(basemaps, overlays).addTo(map);
+
+
+	
+var marker1 = L.marker([20.76476121, -99.95157106], {
+            icon: CzLt,
+        }).addTo(map).bindPopup('Caliza-Lutita.');
+		
+var marker2 = L.marker([20.74278509, -99.93436971], {
+            icon: Col,
+        }).addTo(map).bindPopup('Coluvial.');
+		
+var marker3 = L.marker([20.74970388, -99.9140514], {
+            icon: ADa,
+        }).addTo(map).bindPopup('Andesita-Dacita.');
+		
+var marker4 = L.marker([20.78315932, -99.95156163], {
+            icon: RTR,
+        }).addTo(map).bindPopup('Riolita-Toba riolítica.');
+		
+var marker5 = L.marker([20.73866265, -99.95211665], {
+            icon: CgAr,
+        }).addTo(map).bindPopup('Conglomerado poligénico-Arenisca.');
+		
+var marker6 = L.marker([20.75757005,	-99.93630377], {
+            icon: myDivIcon1,
+        }).addTo(map).bindPopup('Granodiorita-Diorita.');
+
+ //var controlElevation = L.control.elevation(opts.elevationControl.options);
+
+    map.on('eledata_loaded', function(e) {
+      var q = document.querySelector.bind(document);
+      var track = e.track_info;
+
+      controlLayer.addOverlay(e.layer, e.name);
+
+      q('.totlen .summaryvalue').innerHTML = track.distance.toFixed(2) + " km";
+      q('.maxele .summaryvalue').innerHTML = track.elevation_max.toFixed(2) + " m";
+      q('.minele .summaryvalue').innerHTML = track.elevation_min.toFixed(2) + " m";
+    });
+
+    controlElevation.loadChart(map);
+    controlElevation.loadData(opts.elevationControl.data);
+		
+</script>
+ 
+</body>
+
+</html>
