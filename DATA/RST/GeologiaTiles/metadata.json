@@ -1,0 +1,17 @@
+{
+    "profile": "mercator", 
+    "scale": "1.000000", 
+    "attribution": "Rendered with <a href=\"https://www.maptiler.com/desktop/\">MapTiler Desktop</a>", 
+    "name": "Geologia_Bernal_GCS", 
+    "generator": "MapTiler Desktop Free 10.3-cce17ef4a4", 
+    "format": "png", 
+    "bounds": "-99.960870,20.734264,-99.912456,20.788574", 
+    "format_arguments": "", 
+    "minzoom": "12", 
+    "version": "1", 
+    "maxzoom": "14", 
+    "scheme": "tms", 
+    "type": "overlay", 
+    "legend": "", 
+    "description": ""
+}
